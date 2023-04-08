@@ -1,0 +1,4 @@
+credentials/
+__pycache__/
+config.py
+tracking.db
