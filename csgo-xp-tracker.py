@@ -224,14 +224,21 @@ async def remove_user(interaction, steam_id: str):
 		await interaction.followup.send(f"`{steam_id}` is not a valid Steam ID.\n{e}")
 		return
 
-	if database.get_user_by_steam_id(steam_id) is None:
+	tracked_user = database.get_user_by_steam_id(steam_id)
+	if tracked_user is None:
 		await interaction.followup.send(f"User `{steam_id}` is not being tracked.")
+		return
+
+	if int(tracked_user.discord_id) != interaction.user.id:
+		await interaction.followup.send(f"Can't delete a user that you didn't add. {type(tracked_user.discord_id)=} {type(interaction.user.id)=}")
 		return
 
 	try:
 		database.remove_user(steam_id, interaction.user.id)
 	except Exception as e:
 		await interaction.followup.send(f"Could not remove user.\n{e}")
+
+	await interaction.followup.send(f"Stopped tracking `{tracked_user.steam_id}`.")
 
 if __name__ == "__main__":
 	discord_client.run(DISCORD_TOKEN)

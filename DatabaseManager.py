@@ -59,3 +59,13 @@ class DatabaseManager:
 
 		db.commit()
 		db.close()
+
+	def remove_user(self, steam_id, discord_id):
+		db = self.__open_db()
+
+		command = "DELETE FROM tracking WHERE steam_id = ? AND discord_id = ?"
+		args = (steam_id, discord_id)
+		db.execute(command, args)
+
+		db.commit()
+		db.close()
