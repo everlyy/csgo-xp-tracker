@@ -143,6 +143,9 @@ async def on_ready():
 	global update_channel
 
 	update_channel = discord_client.get_channel(DISCORD_UPDATE_CHANNEL)
+	if update_channel is None:
+		print(f"Couldn't find channel {DISCORD_UPDATE_CHANNEL}. Quitting.")
+		os._exit(1)
 
 	discord_client.loop.create_task(steam_idle())
 	discord_client.loop.create_task(check_tracking_loop())
