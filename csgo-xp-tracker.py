@@ -147,8 +147,8 @@ async def on_ready():
 		print(f"Couldn't find channel {DISCORD_UPDATE_CHANNEL}. Quitting.")
 		os._exit(1)
 
-	discord_client.loop.create_task(steam_idle())
-	discord_client.loop.create_task(check_tracking_loop())
+	asyncio.create_task(steam_idle())
+	asyncio.create_task(check_tracking_loop())
 	steam_login()
 
 	if discord_client.sync_tree:
