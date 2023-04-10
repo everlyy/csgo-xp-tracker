@@ -120,7 +120,6 @@ async def check_tracking():
 	users = database.get_users()
 	
 	for user in users:
-		for i in range(3):
 			try:
 				level, xp = get_user_level_and_xp(user.steam_id)
 			except Exception as e:
