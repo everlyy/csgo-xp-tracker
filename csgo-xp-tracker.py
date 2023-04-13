@@ -10,6 +10,7 @@ import csgo
 import gevent
 import os
 import requests
+import datetime
 
 steam_client = SteamClient()
 csgo_client = CSGOClient(steam_client)
@@ -94,6 +95,7 @@ def user_xp_changed(tracked_user):
 	webhook_embed.set_title(f"{username}'s XP Changed")
 	webhook_embed.set_url(f"https://steamcommunity.com/profiles/{tracked_user.steam_id}")
 	webhook_embed.set_thumbnail(avatar)
+	webhook_embed.set_timestamp(datetime.datetime.utcnow().isoformat())
 
 	if tracked_user.level != tracked_user.previous_level:
 		webhook_embed.add_field(name="Level", value=f"Was: *{tracked_user.previous_level}*\nNow: *{tracked_user.level}*")

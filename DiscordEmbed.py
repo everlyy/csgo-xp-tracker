@@ -12,6 +12,9 @@ class DiscordEmbed:
 	def set_url(self, url):
 		self.embed["url"] = url
 
+	def set_timestamp(self, timestamp):
+		self.embed["timestamp"] = timestamp
+
 	def set_thumbnail(self, url, proxy_url=None, height=None, width=None):
 		self.embed["thumbnail"] = { 
 			"url": url 
