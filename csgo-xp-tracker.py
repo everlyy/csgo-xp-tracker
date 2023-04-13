@@ -36,6 +36,8 @@ def launch_csgo():
 		csgo_client.launch()
 
 def get_user_level_and_xp(steam_id):
+	launch_csgo()
+
 	inspect_params = { "account_id": SteamID(steam_id).as_32, "request_level": 32 }
 	csgo_client.send(ECsgoGCMsg.EMsgGCCStrike15_v2_ClientRequestPlayersProfile, inspect_params)
 	response = csgo_client.wait_event(ECsgoGCMsg.EMsgGCCStrike15_v2_PlayersProfile, timeout=5)
