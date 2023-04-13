@@ -1,6 +1,6 @@
 # csgo-xp-tracker
 
-Bot that tracks user's level and XP in CS:GO
+Program to track user's CS:GO XP progress in Discord
 
 # How to use
 
