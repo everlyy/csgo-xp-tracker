@@ -1,27 +1,20 @@
 # Login for account that checks the XP
-STEAM_USERNAME = "username for steam account"
-STEAM_PASSWORD = "password for steam account"
+STEAM_USERNAME = "steam username"
+STEAM_PASSWORD = "steam password"
 
 # Steam API key for getting account name and avatar
-STEAM_API_KEY = "steam API key https://steamcommunity.com/dev/apikey"
+STEAM_API_KEY = "steam api key"
 
 # Path where logins for Steam will be saved
 CREDENTIALS_LOCATION = "credentials"
 
-# Token for Discord bot
-DISCORD_TOKEN = "token "
+# Webhook that will be used to post XP updates
+DISCORD_UPDATE_WEBHOOK = "webhook url"
+WEBHOOK_USERNAME = "XP Tracker"
+WEBHOOK_AVATAR_URL = "https://cdn.discordapp.com/embed/avatars/0.png"
 
-# Synchronize slash commands. Only necessary on first launch or when a command changes.
-DISCORD_SYNC_TREE = True
-
-# Make commands only work for owner of bot application
-OWNER_ONLY_MODE = True
-
-# Channel where XP updates will be posted
-DISCORD_UPDATE_CHANNEL = 123456789
-
-# Path for database
-DATABASE_PATH = "tracking.db"
+# Path for list of users being tracked
+TRACKING_LIST_PATH = "tracking_list.json"
 
 # Timeout between checks (in seconds)
-CHECK_TIMEOUT = 300
+CHECK_TIMEOUT = 60
