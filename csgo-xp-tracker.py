@@ -1,6 +1,7 @@
 from config import *
 from csgo.client import CSGOClient
 from csgo.enums import ECsgoGCMsg
+from DiscordEmbed import DiscordEmbed
 from steam.client import SteamClient
 from steam.steamid import SteamID
 from TrackedUsers import TrackedUsers
@@ -69,7 +70,7 @@ def send_webhook(webhook_url, embed):
 	data = {
 		"username": WEBHOOK_USERNAME,
 		"avatar_url": WEBHOOK_AVATAR_URL,
-		"embeds": [ embed ]
+		"embeds": [ embed.embed ]
 	}
 	response = requests.post(webhook_url, json=data)
 	response.raise_for_status()
@@ -89,21 +90,16 @@ def user_xp_changed(tracked_user):
 	except:
 		pass
 
-	webhook_embed = {
-		"title": f"{username}'s XP Changed",
-		"url": f"https://steamcommunity.com/profiles/{tracked_user.steam_id}",
-		"thumbnail": { "url": avatar },
-		"fields": [
-			{
-				"name": "Level",
-				"value": f"Was: *{tracked_user.previous_level}*\nNow: *{tracked_user.level}*"
-			},
-			{
-				"name": "XP",
-				"value": f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*"
-			}
-		]
-	}
+	webhook_embed = DiscordEmbed()
+	webhook_embed.set_title(f"{username}'s XP Changed")
+	webhook_embed.set_url(f"https://steamcommunity.com/profiles/{tracked_user.steam_id}")
+	webhook_embed.set_thumbnail(avatar)
+
+	if tracked_user.level != tracked_user.previous_level:
+		webhook_embed.add_field(name="Level", value=f"Was: *{tracked_user.previous_level}*\nNow: *{tracked_user.level}*")
+
+	if tracked_user.xp != tracked_user.previous_xp:
+		webhook_embed.add_field(name="XP", value=f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*")
 
 	send_webhook(DISCORD_UPDATE_WEBHOOK, webhook_embed)
 
