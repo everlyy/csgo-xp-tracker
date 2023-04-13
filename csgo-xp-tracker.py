@@ -125,6 +125,14 @@ def steam_client_logged_on():
 @csgo_client.on("ready")
 def csgo_client_ready():
 	print("CS:GO client ready")
+
+	embed = DiscordEmbed()
+	embed.set_title("XP Tracker started")
+	embed.add_field(name="Users", value=f"Tracking {len(tracking_list.get_tracking_list())} user(s)")
+	embed.add_field(name="Checking", value=f"Checking every {CHECK_TIMEOUT} seconds")
+	embed.set_timestamp(datetime.datetime.utcnow().isoformat())
+	send_webhook(DISCORD_UPDATE_WEBHOOK, embed)
+
 	while True:
 		for steam_id in tracking_list.get_tracking_list():
 			print(f"Checking {steam_id}")
