@@ -99,9 +99,13 @@ def user_xp_changed(tracked_user):
 
 	if tracked_user.level != tracked_user.previous_level:
 		webhook_embed.add_field(name="Level", value=f"Was: *{tracked_user.previous_level}*\nNow: *{tracked_user.level}*")
+	else:
+		webhook_embed.add_field(name="Level (unchanged)", value=f"Now: *{tracked_user.level}*")
 
 	if tracked_user.xp != tracked_user.previous_xp:
 		webhook_embed.add_field(name="XP", value=f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*")
+	else:
+		webhook_embed.add_field(name="XP (unchanged)", value=f"Now: *{tracked_user.xp}*")
 
 	send_webhook(DISCORD_UPDATE_WEBHOOK, webhook_embed)
 
