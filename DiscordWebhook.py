@@ -1,4 +1,6 @@
-# https://discord.com/developers/docs/resources/channel#embed-object-embed-field-structure
+import requests
+
+# https://discord.com/developers/docs/resources/channel#embed-object
 class DiscordEmbed:
 	def __init__(self):
 		self.embed = {}
@@ -36,3 +38,21 @@ class DiscordEmbed:
 		if inline is not None: field["inline"] = inline
 
 		self.embed["fields"].append(field)
+
+class DiscordWebhook:
+	def __init__(self, url):
+		self.url = url
+		self.webhook = {}
+
+	def set_username(self, username):
+		self.webhook["username"] = username
+
+	def set_avatar_url(self, avatar_url):
+		self.webhook["avatar_url"] = avatar_url
+
+	def send(self, content=None, embed=None):
+		if content is not None: self.webhook["content"] = content
+		if embed is not None: self.webhook["embeds"] = [ embed.embed ]
+
+		response = requests.post(self.url, json=self.webhook)
+		response.raise_for_status()

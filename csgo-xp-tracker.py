@@ -1,7 +1,7 @@
 from config import *
 from csgo.client import CSGOClient
 from csgo.enums import ECsgoGCMsg
-from DiscordEmbed import DiscordEmbed
+from DiscordWebhook import DiscordWebhook, DiscordEmbed
 from steam.client import SteamClient
 from steam.steamid import SteamID
 from TrackedUsers import TrackedUsers
@@ -16,6 +16,8 @@ steam_client = SteamClient()
 csgo_client = CSGOClient(steam_client)
 tracking_list = TrackingList(TRACKING_LIST_PATH)
 tracked_users = TrackedUsers()
+
+webhook = DiscordWebhook(DISCORD_UPDATE_WEBHOOK)
 
 def steam_login():
 	if steam_client.logged_on: 
@@ -67,15 +69,6 @@ def get_user_name_and_avatar(steam_id, api_key):
 
 	raise Exception(f"Could't find {steam_id} in response.")
 
-def send_webhook(webhook_url, embed):
-	data = {
-		"username": WEBHOOK_USERNAME,
-		"avatar_url": WEBHOOK_AVATAR_URL,
-		"embeds": [ embed.embed ]
-	}
-	response = requests.post(webhook_url, json=data)
-	response.raise_for_status()
-
 def user_xp_changed(tracked_user):
 	if tracked_user.first_check:
 		print(f"First change for {tracked_user.steam_id}. Not sending message.")
@@ -92,23 +85,23 @@ def user_xp_changed(tracked_user):
 		print(f"Could't get username and avatar for {tracked_user.steam_id}: {e}")
 		pass
 
-	webhook_embed = DiscordEmbed()
-	webhook_embed.set_title(f"{username}'s XP Changed")
-	webhook_embed.set_url(f"https://steamcommunity.com/profiles/{tracked_user.steam_id}")
-	webhook_embed.set_thumbnail(avatar)
-	webhook_embed.set_timestamp(datetime.datetime.utcnow().isoformat())
+	embed = DiscordEmbed()
+	embed.set_title(f"{username}'s XP Changed")
+	embed.set_url(f"https://steamcommunity.com/profiles/{tracked_user.steam_id}")
+	embed.set_thumbnail(avatar)
+	embed.set_timestamp(datetime.datetime.utcnow().isoformat())
 
 	if tracked_user.level != tracked_user.previous_level:
-		webhook_embed.add_field(name="Level", value=f"Was: *{tracked_user.previous_level}*\nNow: *{tracked_user.level}*")
+		embed.add_field(name="Level", value=f"Was: *{tracked_user.previous_level}*\nNow: *{tracked_user.level}*")
 	else:
-		webhook_embed.add_field(name="Level (unchanged)", value=f"Now: *{tracked_user.level}*")
+		embed.add_field(name="Level (unchanged)", value=f"Now: *{tracked_user.level}*")
 
 	if tracked_user.xp != tracked_user.previous_xp:
-		webhook_embed.add_field(name="XP", value=f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*")
+		embed.add_field(name="XP", value=f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*")
 	else:
-		webhook_embed.add_field(name="XP (unchanged)", value=f"Now: *{tracked_user.xp}*")
+		embed.add_field(name="XP (unchanged)", value=f"Now: *{tracked_user.xp}*")
 
-	send_webhook(DISCORD_UPDATE_WEBHOOK, webhook_embed)
+	webhook.send(embed=embed)
 
 def check_user(steam_id):
 	tracked_user = tracked_users.find_tracked_user_by_steam_id(steam_id)
@@ -136,7 +129,7 @@ def csgo_client_ready():
 	embed.add_field(name="Users", value=f"Tracking {len(tracking_list.get_tracking_list())} user(s)")
 	embed.add_field(name="Checking", value=f"Checking every {CHECK_TIMEOUT} seconds")
 	embed.set_timestamp(datetime.datetime.utcnow().isoformat())
-	send_webhook(DISCORD_UPDATE_WEBHOOK, embed)
+	webhook.send(embed=embed)
 
 	while True:
 		for steam_id in tracking_list.get_tracking_list():
@@ -147,5 +140,8 @@ def csgo_client_ready():
 		gevent.sleep(CHECK_TIMEOUT)
 
 if __name__ == "__main__":
+	webhook.set_username(WEBHOOK_USERNAME)
+	webhook.set_avatar_url(WEBHOOK_AVATAR_URL)
+
 	steam_login()
 	steam_client.run_forever()
