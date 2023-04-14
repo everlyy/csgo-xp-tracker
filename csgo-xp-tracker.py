@@ -65,7 +65,7 @@ def get_user_name_and_avatar(steam_id, api_key):
 			continue
 		return player["personaname"], player["avatarfull"]
 
-	raise Exception("Could't get user name or avatar")
+	raise Exception(f"Could't find {steam_id} in response.")
 
 def send_webhook(webhook_url, embed):
 	data = {
@@ -88,7 +88,8 @@ def user_xp_changed(tracked_user):
 
 	try:
 		username, avatar = get_user_name_and_avatar(tracked_user.steam_id, STEAM_API_KEY)
-	except:
+	except Exception as e:
+		print(f"Could't get username and avatar for {tracked_user.steam_id}: {e}")
 		pass
 
 	webhook_embed = DiscordEmbed()
