@@ -53,6 +53,9 @@ def get_user_level_and_xp(steam_id):
 	return profile.player_level, max(0, profile.player_cur_xp - 327680000)
 
 def get_user_name_and_avatar(steam_id, api_key):
+	if DISABLE_STEAM_API:
+		raise Exception("Steam API is disabled")
+
 	params = {
 		"key": api_key,
 		"steamids": steam_id

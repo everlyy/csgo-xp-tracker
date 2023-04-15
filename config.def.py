@@ -3,7 +3,9 @@ STEAM_USERNAME = "steam username"
 STEAM_PASSWORD = "steam password"
 
 # Steam API key for getting account name and avatar
+# If you disable it, you wont see user's names or avatars
 STEAM_API_KEY = "steam api key"
+DISABLE_STEAM_API = False
 
 # Path where logins for Steam will be saved
 CREDENTIALS_LOCATION = "credentials"
