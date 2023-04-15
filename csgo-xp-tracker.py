@@ -69,6 +69,12 @@ def get_user_name_and_avatar(steam_id, api_key):
 
 	raise Exception(f"Could't find {steam_id} in response.")
 
+def calculate_difference(now, previous, _max):
+	difference = now - previous
+	if difference < 0:
+		difference += _max
+	return difference
+
 def user_xp_changed(tracked_user):
 	if tracked_user.first_check:
 		print(f"First change for {tracked_user.steam_id}. Not sending message.")
@@ -92,12 +98,14 @@ def user_xp_changed(tracked_user):
 	embed.set_timestamp(datetime.datetime.utcnow().isoformat())
 
 	if tracked_user.level != tracked_user.previous_level:
-		embed.add_field(name="Level", value=f"Was: *{tracked_user.previous_level}*\nNow: *{tracked_user.level}*")
+		level_difference = calculate_difference(tracked_user.level, tracked_user.previous_level, 40)
+		embed.add_field(name="Level", value=f"Was: *{tracked_user.previous_level}*\nNow: *{tracked_user.level}*\nDifference: *{level_difference:+}*")
 	else:
 		embed.add_field(name="Level (unchanged)", value=f"Now: *{tracked_user.level}*")
 
 	if tracked_user.xp != tracked_user.previous_xp:
-		embed.add_field(name="XP", value=f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*")
+		xp_difference = calculate_difference(tracked_user.xp, tracked_user.previous_xp, 5000)
+		embed.add_field(name="XP", value=f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*\nDifference: *{xp_difference:+}*")
 	else:
 		embed.add_field(name="XP (unchanged)", value=f"Now: *{tracked_user.xp}*")
 
