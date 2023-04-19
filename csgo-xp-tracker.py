@@ -19,6 +19,8 @@ tracked_users = TrackedUsers()
 
 webhook = DiscordWebhook(DISCORD_UPDATE_WEBHOOK)
 
+checking_loop_running = False
+
 def steam_login():
 	if steam_client.logged_on: 
 		return
@@ -126,6 +128,22 @@ def check_user(steam_id):
 	print(f"Got level and xp for {steam_id}: {level=} {xp=}")
 	tracked_user.update_level_and_xp(level, xp, user_xp_changed)
 
+def check_users():
+	global checking_loop_running
+
+	if checking_loop_running:
+		return
+
+	checking_loop_running = True
+
+	while True:
+		for steam_id in tracking_list.get_tracking_list():
+			print(f"Checking {steam_id}")
+			check_user(steam_id)
+
+		print(f"Next check in {CHECK_TIMEOUT} seconds.")
+		gevent.sleep(CHECK_TIMEOUT)
+
 @steam_client.on("logged_on")
 def steam_client_logged_on():
 	print("Steam client logged on")
@@ -142,13 +160,7 @@ def csgo_client_ready():
 	embed.set_timestamp(datetime.datetime.utcnow().isoformat())
 	webhook.send(embed=embed)
 
-	while True:
-		for steam_id in tracking_list.get_tracking_list():
-			print(f"Checking {steam_id}")
-			check_user(steam_id)
-
-		print(f"Next check in {CHECK_TIMEOUT} seconds.")
-		gevent.sleep(CHECK_TIMEOUT)
+	check_users()
 
 if __name__ == "__main__":
 	webhook.set_username(WEBHOOK_USERNAME)
