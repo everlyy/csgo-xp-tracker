@@ -18,5 +18,8 @@ WEBHOOK_AVATAR_URL = "https://cdn.discordapp.com/embed/avatars/0.png"
 # Path for list of users being tracked
 TRACKING_LIST_PATH = "tracking_list.json"
 
+# Send message if user is added/removed
+SEND_TRACKING_LIST_UPDATES = True
+
 # Timeout between checks (in seconds)
 CHECK_TIMEOUT = 60

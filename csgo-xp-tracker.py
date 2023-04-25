@@ -128,6 +128,39 @@ def check_user(steam_id):
 	print(f"Got level and xp for {steam_id}: {level=} {xp=}")
 	tracked_user.update_level_and_xp(level, xp, user_xp_changed)
 
+def get_tracking_list_difference():
+	old_tracking_list = tracking_list.get_tracking_list()
+	tracking_list.read_tracking_list_from_file()
+	new_tracking_list = tracking_list.get_tracking_list()
+
+	tracking_added = [steam_id for steam_id in new_tracking_list if steam_id not in old_tracking_list]
+	tracking_removed = [steam_id for steam_id in old_tracking_list if steam_id not in new_tracking_list]
+	return tracking_added, tracking_removed
+
+def send_tracking_list_difference_if_needed(tracking_added, tracking_removed):
+	if not SEND_TRACKING_LIST_UPDATES:
+		return
+
+	if len(tracking_added) == 0  and len(tracking_removed) == 0:
+		print(f"No difference in tracking list.")
+		return
+
+	print(f"Tracking list difference: {len(tracking_added)=} {len(tracking_removed)=}")
+
+	embed = DiscordEmbed()
+	embed.set_title("XP Tracker users changed")
+
+	if len(tracking_added):
+		steam_ids_list = "\n".join(tracking_added)
+		embed.add_field(name="Users Added", value=f"```{steam_ids_list}```")
+
+	if len(tracking_removed):
+		steam_ids_list = "\n".join(tracking_removed)
+		embed.add_field(name="Users Removed", value=f"```{steam_ids_list}```")
+
+	embed.set_timestamp(datetime.datetime.utcnow().isoformat())
+	webhook.send(embed=embed)
+
 def check_users():
 	global checking_loop_running
 
@@ -137,7 +170,9 @@ def check_users():
 	checking_loop_running = True
 
 	while True:
-		tracking_list.read_tracking_list_from_file()
+		tracking_added, tracking_removed = get_tracking_list_difference()
+		send_tracking_list_difference_if_needed(tracking_added, tracking_removed)
+
 		for steam_id in tracking_list.get_tracking_list():
 			print(f"Checking {steam_id}")
 			check_user(steam_id)
