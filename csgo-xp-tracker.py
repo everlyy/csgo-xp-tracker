@@ -137,6 +137,7 @@ def check_users():
 	checking_loop_running = True
 
 	while True:
+		tracking_list.read_tracking_list_from_file()
 		for steam_id in tracking_list.get_tracking_list():
 			print(f"Checking {steam_id}")
 			check_user(steam_id)
