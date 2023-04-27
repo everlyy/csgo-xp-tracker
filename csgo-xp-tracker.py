@@ -109,8 +109,9 @@ def user_xp_changed(tracked_user):
 		embed.add_field(name="Level (unchanged)", value=f"Now: *{tracked_user.level}*")
 
 	if tracked_user.xp != tracked_user.previous_xp:
-		xp_difference = calculate_difference(tracked_user.xp, tracked_user.previous_xp, 5000)
-		embed.add_field(name="XP", value=f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*\nDifference: *{xp_difference:+}*")
+		XP_PER_LEVEL = 5000
+		xp_difference = calculate_difference(tracked_user.xp, tracked_user.previous_xp, XP_PER_LEVEL)
+		embed.add_field(name="XP", value=f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*\nDifference: *{xp_difference:+}*\nNeed *{XP_PER_LEVEL - tracked_user.xp}* XP for next level")
 	else:
 		embed.add_field(name="XP (unchanged)", value=f"Now: *{tracked_user.xp}*")
 
