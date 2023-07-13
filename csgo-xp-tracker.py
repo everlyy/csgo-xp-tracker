@@ -22,6 +22,8 @@ webhook = DiscordWebhook(DISCORD_UPDATE_WEBHOOK)
 checking_loop_running = False
 
 def steam_login():
+	print(f"Logging in to Steam as {STEAM_USERNAME}")
+	
 	if steam_client.logged_on: 
 		return
 
