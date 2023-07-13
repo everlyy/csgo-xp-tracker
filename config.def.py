@@ -1,4 +1,5 @@
 # Login for account that checks the XP
+# This account can't be used at the same time as the checker is running
 STEAM_USERNAME = "steam username"
 STEAM_PASSWORD = "steam password"
 
