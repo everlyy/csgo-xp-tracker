@@ -19,6 +19,10 @@ class TrackingList:
 		with open(self.path, "w") as file:
 			file.write(json.dumps(self.__tracking_list, indent=4))
 
+	def add_to_tracking_list(self, entry):
+		self.__tracking_list.append(entry)
+		self.__write()
+
 	def read_tracking_list_from_file(self):
 		self.__read()
 
