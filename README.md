@@ -8,5 +8,4 @@ Program to track user's CS:GO XP progress in Discord
  * Install the following pip packages: `csgo` `steam` `steamclient` `requests`.
  * Create a webhook for the channel you want updates in.
  * Copy `config.def.py` to `config.py` and change it to fit your needs.
- * Copy `tracking_list.def.json` to `tracking_list.json` and add the users you want to track (ID64 ONLY!!).
- * Run `csgo-xp-tracker.py`
+ * Run `csgo-xp-tracker.py`. It will run a first time setup so you can add users to track.

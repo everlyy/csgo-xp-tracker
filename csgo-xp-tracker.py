@@ -23,7 +23,7 @@ checking_loop_running = False
 
 def steam_login():
 	print(f"Logging in to Steam as {STEAM_USERNAME}")
-	
+
 	if steam_client.logged_on: 
 		return
 
@@ -201,7 +201,50 @@ def csgo_client_ready():
 
 	check_users()
 
+def do_first_setup():
+	global tracking_list
+	if os.path.exists(TRACKING_LIST_PATH):
+		return
+
+	print("This seems to be your first time launching the program.")
+
+	setup_tracking_list = input("Do you want to set up the tracking list now? [Y/n] ") in ("Y", "y")
+	if not setup_tracking_list:
+		print(f"Okay. Resuming execution as normal")
+		return
+
+	print("Enter a Steam ID to start tracking or enter \"save\" to save tracking list and continue.")
+
+	temp_tracking_list = []
+	save = False
+
+	while not save:
+		steamid_to_add = input("Steam ID to add: ")
+		if steamid_to_add == "save":
+			save = True
+			continue
+
+		if not steamid_to_add.isdigit() or int(steamid_to_add) < 0x0110000100000000 or int(steamid_to_add) >= 0x01100001FFFFFFFF:
+			add_anyways = input(f"{steamid_to_add} doesn't seem to be a valid SteamID64. Add anyways? [Y/n] ") in ("Y", "y")
+			if not add_anyways:
+				continue
+
+		if steamid_to_add in temp_tracking_list:
+			print(f"Already added {steamid_to_add}.")
+			continue
+
+		temp_tracking_list.append(steamid_to_add)
+		print(f"Added {steamid_to_add} to tracking list.")
+		print(f"Current list: {', '.join(temp_tracking_list)}")
+
+	print(f"Saving list to {TRACKING_LIST_PATH}")
+	for entry in temp_tracking_list:
+		tracking_list.add_to_tracking_list(entry)
+	print(f"Saved tracking list. Resuming execution as normal.")
+
 if __name__ == "__main__":
+	do_first_setup()
+
 	webhook.set_username(WEBHOOK_USERNAME)
 	webhook.set_avatar_url(WEBHOOK_AVATAR_URL)
 
