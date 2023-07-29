@@ -39,6 +39,14 @@ class DiscordEmbed:
 
 		self.embed["fields"].append(field)
 
+	def set_footer(self, text, icon_url=None, proxy_icon_url=None):
+		self.embed["footer"] = {
+			"text": text
+		}
+
+		if icon_url is not None: self.embed["footer"]["icon_url"] = icon_url
+		if proxy_icon_url is not None: self.embed["footer"]["proxy_icon_url"] = proxy_icon_url
+
 class DiscordWebhook:
 	def __init__(self, url):
 		self.url = url

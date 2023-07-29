@@ -104,18 +104,14 @@ def user_xp_changed(tracked_user):
 	embed.set_thumbnail(avatar)
 	embed.set_timestamp(datetime.datetime.utcnow().isoformat())
 
-	if tracked_user.level != tracked_user.previous_level:
-		level_difference = calculate_difference(tracked_user.level, tracked_user.previous_level, 40)
-		embed.add_field(name="Level", value=f"Was: *{tracked_user.previous_level}*\nNow: *{tracked_user.level}*\nDifference: *{level_difference:+}*")
-	else:
-		embed.add_field(name="Level (unchanged)", value=f"Now: *{tracked_user.level}*")
+	embed.add_field(name="Level", value=f"`{tracked_user.level}`", inline=True)
 
-	if tracked_user.xp != tracked_user.previous_xp:
-		XP_PER_LEVEL = 5000
-		xp_difference = calculate_difference(tracked_user.xp, tracked_user.previous_xp, XP_PER_LEVEL)
-		embed.add_field(name="XP", value=f"Was: *{tracked_user.previous_xp}*\nNow: *{tracked_user.xp}*\nDifference: *{xp_difference:+}*\nNeed *{XP_PER_LEVEL - tracked_user.xp}* XP for next level")
-	else:
-		embed.add_field(name="XP (unchanged)", value=f"Now: *{tracked_user.xp}*")
+	XP_PER_LEVEL = 5000
+	xp_difference = calculate_difference(tracked_user.xp, tracked_user.previous_xp, XP_PER_LEVEL)
+	embed.add_field(name="XP", value=f"`{tracked_user.xp}`", inline=True)
+	embed.add_field(name="XP Gained", value=f"`{xp_difference}`", inline=True)
+
+	embed.set_footer(f"{username} played {tracked_user.matches} match(es) since tracking started")
 
 	webhook.send(embed=embed)
 
