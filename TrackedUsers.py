@@ -16,7 +16,9 @@ class TrackedUser:
 		self.previous_xp = self.xp
 		self.level = new_level
 		self.xp = new_xp
-		self.matches += 1
+
+		if not self.first_check:
+			self.matches += 1
 
 		change_callback(self)
 		self.first_check = False
