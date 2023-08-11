@@ -2,3 +2,4 @@ credentials/
 __pycache__/
 config.py
 tracking_list.json
+other.*.py

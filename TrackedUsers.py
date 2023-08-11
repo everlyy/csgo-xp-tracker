@@ -8,7 +8,7 @@ class TrackedUser:
 		self.previous_xp = -1
 		self.matches = 0
 
-	def update_level_and_xp(self, new_level, new_xp, change_callback):
+	def update_level_and_xp(self, new_level, new_xp, change_callback, *args, **kwargs):
 		if new_level == self.level and new_xp == self.xp:
 			return
 
@@ -20,7 +20,7 @@ class TrackedUser:
 		if not self.first_check:
 			self.matches += 1
 
-		change_callback(self)
+		change_callback(self, *args, **kwargs)
 		self.first_check = False
 
 class TrackedUsers:
