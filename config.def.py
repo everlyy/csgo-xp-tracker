@@ -24,3 +24,6 @@ SEND_TRACKING_LIST_UPDATES = True
 
 # Timeout between checks (in seconds)
 CHECK_TIMEOUT = 60
+
+# Shared secret for Steam Guard (base64 encoded), if you don't have one just set this to None
+SHARED_SECRET = None

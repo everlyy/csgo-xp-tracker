@@ -2,15 +2,16 @@ from config import *
 from csgo.client import CSGOClient
 from csgo.enums import ECsgoGCMsg
 from DiscordWebhook import DiscordWebhook, DiscordEmbed
+from steam import guard
 from steam.client import SteamClient
 from steam.steamid import SteamID
 from TrackedUsers import TrackedUsers
 from TrackingList import TrackingList
 import csgo
+import datetime
 import gevent
 import os
 import requests
-import datetime
 
 steam_client = SteamClient()
 csgo_client = CSGOClient(steam_client)
@@ -22,6 +23,8 @@ webhook = DiscordWebhook(DISCORD_UPDATE_WEBHOOK)
 checking_loop_running = False
 
 def steam_login():
+	global SHARED_SECRET
+
 	print(f"Logging in to Steam as {STEAM_USERNAME}")
 
 	if steam_client.logged_on: 
@@ -35,8 +38,17 @@ def steam_login():
 		steam_client.relogin()
 	elif steam_client.login_key is not None: 
 		steam_client.login(username=STEAM_USERNAME, login_key=steam_client.login_key)
-	else: 
-		steam_client.cli_login(username=STEAM_USERNAME, password=STEAM_PASSWORD)
+	else:
+		if SHARED_SECRET is None:
+			steam_client.cli_login(username=STEAM_USERNAME, password=STEAM_PASSWORD)
+		else:
+			two_factor_code = guard.generate_twofactor_code(SHARED_SECRET.encode("utf-8"))
+			steam_client.login(username=STEAM_USERNAME, password=STEAM_PASSWORD, two_factor_code=two_factor_code)
+
+			if not steam_client.logged_on:
+				SHARED_SECRET = None
+				print(f"Login with shared secret didn't work.")
+				steam_client.cli_login(username=STEAM_USERNAME, password=STEAM_PASSWORD)
 
 def launch_csgo():
 	if csgo_client.connection_status == csgo.enums.GCConnectionStatus.NO_SESSION:
